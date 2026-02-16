@@ -43,7 +43,39 @@ public class ClientesController : ControllerBase
         
         _clientes.Add(novoCliente);
 
-        //  retornamos o link de onde o recurso foi criado
+        // Retornamos o link de onde o recurso foi criado
         return CreatedAtAction(nameof(BuscarPorId), new { id = novoCliente.Id }, novoCliente);
+    }
+
+    // 4. ATUALIZAR (PUT) - CRUD COMPLETO 
+    [HttpPut("{id}")]
+    public IActionResult Atualizar(int id, [FromBody] Cliente clienteAtualizado)
+    {
+        var cliente = _clientes.FirstOrDefault(c => c.Id == id);
+        if (cliente == null) return NotFound($"Cliente com ID {id} não encontrado.");
+
+        // Validação básica para atualização
+        if (string.IsNullOrEmpty(clienteAtualizado.Nome))
+            return BadRequest("O nome é obrigatório para atualizar o cadastro.");
+
+        // Atualiza os campos do objeto existente na lista
+        cliente.Nome = clienteAtualizado.Nome;
+        cliente.Cpf = clienteAtualizado.Cpf;
+        // Adicione aqui outros campos (ex: Email, Telefone) se existirem no seu Model Cliente
+
+        return NoContent(); // Retorno padrão 204 para sucesso em atualizações (sem conteúdo no corpo)
+    }
+
+    // 5. DELETAR (DELETE) - CRUDCOMPLETO
+    [HttpDelete("{id}")]
+    public IActionResult Deletar(int id)
+    {
+        var cliente = _clientes.FirstOrDefault(c => c.Id == id);
+        if (cliente == null) return NotFound($"Cliente com ID {id} não encontrado.");
+
+        _clientes.Remove(cliente);
+        
+        // Retorna uma mensagem de confirmação
+        return Ok(new { mensagem = $"Cliente com ID {id} removido com sucesso do sistema de logística!" });
     }
 }
