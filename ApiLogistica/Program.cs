@@ -1,23 +1,34 @@
 var builder = WebApplication.CreateBuilder(args);
 
-// Adiciona os serviços para os Controllers e Swagger
+// Configuração de CORS para liberar o acesso do Angular
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy => policy.WithOrigins("http://localhost:4200")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Ativa o Swagger para podermos testar o Back-end
+// Ativa o CORS antes das rotas
+app.UseCors("AllowAngular");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-app.MapControllers(); // Importante: liga as rotas dos controllers
+// Comentado para evitar erro de certificado SSL no teste local
+// app.UseHttpsRedirection(); 
 
-// Redireciona a página inicial para o Swagger automaticamente
+app.MapControllers();
+
 app.MapGet("/", () => Results.Redirect("/swagger"));
 
 app.Run();

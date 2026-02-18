@@ -1,0 +1,26 @@
+<div style="text-align:center; padding: 20px;">
+  <h1>🚚 Direction Logística</h1>
+  <hr>
+  <h2>Lista de Clientes</h2>
+
+  <table border="1" style="margin: 0 auto; width: 80%;" *ngIf="clientes.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cliente of clientes">
+        <td>{{ cliente.id }}</td>
+        <td>{{ cliente.nome }}</td>
+        <td>{{ cliente.email }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="clientes.length === 0" style="margin-top: 20px;">
+    <p>Carregando clientes ou lista vazia...</p>
+  </div>
+</div>
